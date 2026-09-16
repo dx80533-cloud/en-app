@@ -8,13 +8,13 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { NeedLogin } from '@lark-apaas/fullstack-nestjs-core';
+import { NeedLogin } from '../../common/decorators/need-login.decorator';
 import { ListeningService } from './listening.service';
 import type {
   ListeningQuestion,
   ListeningResult,
   ListeningQuestionType,
-} from '@shared/api.interface';
+} from '../../../shared/api.interface';
 
 interface SubmitListeningDto {
   bank: string;
@@ -52,7 +52,7 @@ export class ListeningController {
     const modeVal = mode ?? 'random';
     const bankVal = bank || 'gept';
 
-    const userId = req?.userContext?.userId ?? null;
+    const userId = req?.user?.id ?? null;
 
     if (modeVal === 'review' && !userId) {
       throw new BadRequestException('複習模式需登入');
@@ -77,7 +77,7 @@ export class ListeningController {
     @Req() req: Request,
     @Body() body: SubmitListeningDto,
   ): Promise<ListeningResult> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.listeningService.submit(userId, body);
   }
 }

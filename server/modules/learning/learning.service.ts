@@ -1,10 +1,10 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import { DRIZZLE_DATABASE, type PostgresJsDatabase } from '@lark-apaas/fullstack-nestjs-core';
+import { DRIZZLE_DATABASE, type VocabDb } from '../../database/database.module';
 import {
   vocabWords,
   vocabUserProgress,
   vocabUserStats,
-} from '@server/database/schema';
+} from '../../database/schema';
 import {
   eq,
   and,
@@ -15,11 +15,12 @@ import {
   count,
   gte,
   notInArray,
+  like,
 } from 'drizzle-orm';
 import type {
   VocabWordWithProgress,
   LearningSessionResult,
-} from '@shared/api.interface';
+} from '../../../shared/api.interface';
 
 const DAILY_GOAL = 20;
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
@@ -140,7 +141,7 @@ function mapWordAsNew(w: typeof vocabWords.$inferSelect): VocabWordWithProgress 
 export class LearningService {
   private readonly logger = new Logger(LearningService.name);
 
-  constructor(@Inject(DRIZZLE_DATABASE) private readonly db: PostgresJsDatabase) {}
+  constructor(@Inject(DRIZZLE_DATABASE) private readonly db: VocabDb) {}
 
   async getDueWords(
     limit: number,
@@ -276,14 +277,14 @@ export class LearningService {
   private buildWordConditions(
     bank?: string,
     level?: string,
-  ): Array<ReturnType<typeof eq>> {
-    const conditions: Array<ReturnType<typeof eq>> = [];
+  ): Array<ReturnType<typeof eq> | ReturnType<typeof like>> {
+    const conditions: Array<ReturnType<typeof eq> | ReturnType<typeof like>> = [];
     if (level) {
       conditions.push(eq(vocabWords.level, level));
     }
     if (bank) {
       conditions.push(
-        sql`${vocabWords.banks} @> ARRAY[${bank}]::text[]` as unknown as ReturnType<typeof eq>,
+        like(vocabWords.banks, `%"${bank}"%`),
       );
     }
     return conditions;
@@ -296,8 +297,8 @@ export class LearningService {
     _timeSpent?: number,
   ): Promise<LearningSessionResult> {
     try {
-      return await this.db.transaction(async (tx) => {
-        const existing = await tx
+      return this.db.transaction((tx) => {
+        const existing = tx
           .select()
           .from(vocabUserProgress)
           .where(
@@ -305,7 +306,7 @@ export class LearningService {
               eq(vocabUserProgress.userId, userId),
               eq(vocabUserProgress.wordId, wordId),
             ),
-          );
+          ).all();
 
         const now = new Date();
         const prev = existing[0];
@@ -322,7 +323,7 @@ export class LearningService {
         const xpEarned = correct ? 10 : 3;
 
         if (prev) {
-          await tx
+          tx
             .update(vocabUserProgress)
             .set({
               correctCount: currentCorrectCount + (correct ? 1 : 0),
@@ -339,7 +340,7 @@ export class LearningService {
               ),
             );
         } else {
-          await tx.insert(vocabUserProgress).values({
+          tx.insert(vocabUserProgress).values({
             userId,
             wordId,
             correctCount: correct ? 1 : 0,
@@ -354,10 +355,10 @@ export class LearningService {
         // Update user stats
         const todayStr = getTodayDateString();
         const yesterdayStr = getYesterdayDateString();
-        const statsRow = await tx
+        const statsRow = tx
           .select()
           .from(vocabUserStats)
-          .where(eq(vocabUserStats.userId, userId));
+          .where(eq(vocabUserStats.userId, userId)).all();
 
         if (statsRow.length > 0) {
           const s = statsRow[0];
@@ -379,7 +380,7 @@ export class LearningService {
           const newXp = s.xp + xpEarned;
           const newLevel = Math.floor(newXp / 100) + 1;
 
-          await tx
+          tx
             .update(vocabUserStats)
             .set({
               xp: newXp,
@@ -395,7 +396,7 @@ export class LearningService {
         } else {
           const newXp = xpEarned;
           const newLevel = Math.floor(newXp / 100) + 1;
-          await tx.insert(vocabUserStats).values({
+          tx.insert(vocabUserStats).values({
             userId,
             xp: newXp,
             level: newLevel,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { logger } from '@lark-apaas/client-toolkit/logger';
+import { logger } from '@client/src/lib/logger';
 import {
   BookOpen,
   Sparkles,

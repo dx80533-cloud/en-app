@@ -9,13 +9,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { NeedLogin } from '@lark-apaas/fullstack-nestjs-core';
+import { NeedLogin } from '../../common/decorators/need-login.decorator';
 import { VocabularyService } from './vocabulary.service';
 import type {
   VocabWordWithProgress,
   WordListResponse,
   WordBanksInfo,
-} from '@shared/api.interface';
+} from '../../../shared/api.interface';
 
 @Controller('api/vocabulary')
 export class VocabularyController {
@@ -36,7 +36,7 @@ export class VocabularyController {
   ): Promise<WordListResponse> {
     const pageNum = page ? parseInt(page, 10) : 1;
     const pageSizeNum = pageSize ? parseInt(pageSize, 10) : 20;
-    const userId: string | undefined = req.userContext?.userId;
+    const userId: string | undefined = req.user?.id;
 
     this.logger.log(
       `查詢單字列表 page=${pageNum} pageSize=${pageSizeNum} bank=${bank ?? 'all'} level=${level ?? 'all'}`,
@@ -59,7 +59,7 @@ export class VocabularyController {
     @Req() req: Request,
     @Param('id') id: string,
   ): Promise<VocabWordWithProgress> {
-    const userId: string | undefined = req.userContext?.userId;
+    const userId: string | undefined = req.user?.id;
     const word: VocabWordWithProgress | null =
       await this.vocabularyService.getWordDetail(id, userId ?? null);
 
@@ -81,7 +81,7 @@ export class VocabularyController {
     @Req() req: Request,
     @Param('id') id: string,
   ): Promise<{ isFavorite: boolean }> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     this.logger.log(`切換收藏 wordId=${id} userId=${userId}`);
     return this.vocabularyService.toggleFavorite(id, userId);
   }
@@ -93,7 +93,7 @@ export class VocabularyController {
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
   ): Promise<WordListResponse> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     const pageNum = page ? parseInt(page, 10) : 1;
     const pageSizeNum = pageSize ? parseInt(pageSize, 10) : 20;
 

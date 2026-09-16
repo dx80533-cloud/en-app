@@ -1,22 +1,21 @@
 import { Injectable, Inject, Logger, NotFoundException } from '@nestjs/common';
-import { DRIZZLE_DATABASE, type PostgresJsDatabase } from '@lark-apaas/fullstack-nestjs-core';
+import { DRIZZLE_DATABASE, type VocabDb } from '../../database/database.module';
 import {
   eq,
   and,
   count,
   desc,
   asc,
-  ilike,
+  like,
   isNull,
   or,
-  sql,
 } from 'drizzle-orm';
-import { vocabWords, vocabUserProgress } from '@server/database/schema';
+import { vocabWords, vocabUserProgress } from '../../database/schema';
 import type {
   VocabWordWithProgress,
   WordListResponse,
   WordBanksInfo,
-} from '@shared/api.interface';
+} from '../../../shared/api.interface';
 
 interface GetWordListParams {
   page: number;
@@ -53,7 +52,7 @@ export class VocabularyService {
   private readonly logger = new Logger(VocabularyService.name);
 
   constructor(
-    @Inject(DRIZZLE_DATABASE) private readonly db: PostgresJsDatabase,
+    @Inject(DRIZZLE_DATABASE) private readonly db: VocabDb,
   ) {}
 
   async getWordList(params: GetWordListParams): Promise<WordListResponse> {
@@ -309,23 +308,17 @@ export class VocabularyService {
     }
     levels.sort();
 
-    const bankResult = await this.db.execute(
-      sql`
-        SELECT unnest(banks) AS bank, COUNT(*)::int AS count
-        FROM vocab_words
-        GROUP BY unnest(banks)
-        ORDER BY bank
-      `,
-    );
+    const bankRows = await this.db
+      .select({ banks: vocabWords.banks })
+      .from(vocabWords);
 
-    const banks: string[] = [];
     const byBank: Record<string, number> = {};
-    for (const row of bankResult as unknown as Array<{ bank: string; count: number }>) {
-      if (row.bank) {
-        banks.push(row.bank);
-        byBank[row.bank] = Number(row.count);
+    for (const row of bankRows) {
+      for (const b of row.banks ?? []) {
+        if (b) byBank[b] = (byBank[b] || 0) + 1;
       }
     }
+    const banks = Object.keys(byBank).sort();
 
     return {
       banks,
@@ -438,12 +431,12 @@ export class VocabularyService {
     bank?: string;
     level?: string;
     search?: string;
-  }): Array<ReturnType<typeof eq> | ReturnType<typeof ilike> | ReturnType<typeof or> | ReturnType<typeof sql>> {
-    const conditions: Array<ReturnType<typeof eq> | ReturnType<typeof ilike> | ReturnType<typeof or> | ReturnType<typeof sql>> = [];
+  }): Array<ReturnType<typeof eq> | ReturnType<typeof like> | ReturnType<typeof or>> {
+    const conditions: Array<ReturnType<typeof eq> | ReturnType<typeof like> | ReturnType<typeof or>> = [];
 
     if (params.bank) {
       conditions.push(
-        sql`${vocabWords.banks} @> ARRAY[${params.bank}]::text[]` as unknown as ReturnType<typeof sql>,
+        like(vocabWords.banks, `%"${params.bank}"%`),
       );
     }
 
@@ -455,8 +448,8 @@ export class VocabularyService {
       const searchTerm = `%${params.search}%`;
       conditions.push(
         or(
-          ilike(vocabWords.word, searchTerm),
-          ilike(vocabWords.zh, searchTerm),
+          like(vocabWords.word, searchTerm),
+          like(vocabWords.zh, searchTerm),
         ),
       );
     }

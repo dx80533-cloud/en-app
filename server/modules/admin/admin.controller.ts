@@ -14,14 +14,14 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Request } from 'express';
-import { NeedLogin } from '@lark-apaas/fullstack-nestjs-core';
+import { NeedLogin } from '../../common/decorators/need-login.decorator';
 import { AdminService } from './admin.service';
 import { ExampleFillerService } from './example-filler.service';
 import type {
   VocabWord,
   ImportResult,
   WordListResponse,
-} from '@shared/api.interface';
+} from '../../../shared/api.interface';
 
 interface CreateWordDto {
   word: string;
@@ -82,7 +82,7 @@ export class AdminController {
     @Req() req: Request,
     @Body() dto: CreateWordDto,
   ): Promise<VocabWord> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.adminService.createWord(dto, userId);
   }
 
@@ -107,7 +107,7 @@ export class AdminController {
     @Param('id') id: string,
     @Body() dto: UpdateWordDto,
   ): Promise<VocabWord> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.adminService.updateWord(id, dto, userId);
   }
 
@@ -123,7 +123,7 @@ export class AdminController {
     @UploadedFile() file: MulterUploadedFile | undefined,
     @Body() body: { format?: string },
   ): Promise<ImportResult> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     const format = body.format?.toLowerCase();
 
     if (!file) {

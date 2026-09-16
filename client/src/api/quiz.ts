@@ -1,5 +1,5 @@
-import { logger } from '@lark-apaas/client-toolkit/logger';
-import { axiosForBackend } from '@lark-apaas/client-toolkit/utils/getAxiosForBackend';
+import { logger } from '@client/src/lib/logger';
+import { axiosForBackend } from '@client/src/api/client';
 import type { QuizQuestion, QuizResult } from '@shared/api.interface';
 
 export interface GenerateQuizParams {
@@ -21,7 +21,7 @@ export async function generateQuiz(
   if (params.types && params.types.length > 0) queryParams.types = params.types.join(',');
   if (params.mode) queryParams.mode = params.mode;
   const { data } = await axiosForBackend.get<QuizQuestion[]>(
-    '/api/quiz/generate',
+    '/quiz/generate',
     { params: queryParams },
   );
   return data;
@@ -45,7 +45,7 @@ export interface SubmitQuizData {
 export async function submitQuiz(data: SubmitQuizData): Promise<QuizResult> {
   logger.info('quizApi.submitQuiz', { count: data.answers.length });
   const { data: result } = await axiosForBackend.post<QuizResult>(
-    '/api/quiz/submit',
+    '/quiz/submit',
     data,
   );
   return result;

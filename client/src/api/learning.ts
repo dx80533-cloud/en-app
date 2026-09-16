@@ -1,5 +1,5 @@
-import { logger } from '@lark-apaas/client-toolkit/logger';
-import { axiosForBackend } from '@lark-apaas/client-toolkit/utils/getAxiosForBackend';
+import { logger } from '@client/src/lib/logger';
+import { axiosForBackend } from '@client/src/api/client';
 import type {
   VocabWordWithProgress,
   LearningSessionResult,
@@ -17,7 +17,7 @@ export async function getDueWords(
 ): Promise<VocabWordWithProgress[]> {
   logger.info('learningApi.getDueWords', params);
   const { data } = await axiosForBackend.get<VocabWordWithProgress[]>(
-    '/api/learning/due-words',
+    '/learning/due-words',
     { params },
   );
   return data;
@@ -32,7 +32,7 @@ export async function submitAnswer(
     `learningApi.submitAnswer wordId=${wordId} correct=${correct}`,
   );
   const { data } = await axiosForBackend.post<LearningSessionResult>(
-    '/api/learning/submit-answer',
+    '/learning/submit-answer',
     { wordId, correct, timeSpent },
   );
   return data;
@@ -49,7 +49,7 @@ export interface DailyGoal {
 export async function getDailyGoal(): Promise<DailyGoal> {
   logger.info('learningApi.getDailyGoal');
   const { data } = await axiosForBackend.get<DailyGoal>(
-    '/api/learning/daily-goal',
+    '/learning/daily-goal',
   );
   return data;
 }

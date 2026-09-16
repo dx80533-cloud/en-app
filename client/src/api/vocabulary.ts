@@ -1,5 +1,5 @@
-import { logger } from '@lark-apaas/client-toolkit/logger';
-import { axiosForBackend } from '@lark-apaas/client-toolkit/utils/getAxiosForBackend';
+import { logger } from '@client/src/lib/logger';
+import { axiosForBackend } from '@client/src/api/client';
 import type {
   VocabWordWithProgress,
   WordListResponse,
@@ -21,7 +21,7 @@ export async function getWords(
 ): Promise<WordListResponse> {
   logger.info('vocabularyApi.getWords', params);
   const { data } = await axiosForBackend.get<WordListResponse>(
-    '/api/vocabulary/words',
+    '/vocabulary/words',
     { params },
   );
   return data;
@@ -30,7 +30,7 @@ export async function getWords(
 export async function getWord(id: string): Promise<VocabWordWithProgress> {
   logger.info(`vocabularyApi.getWord id=${id}`);
   const { data } = await axiosForBackend.get<VocabWordWithProgress>(
-    `/api/vocabulary/words/${id}`,
+    `/vocabulary/words/${id}`,
   );
   return data;
 }
@@ -38,7 +38,7 @@ export async function getWord(id: string): Promise<VocabWordWithProgress> {
 export async function getBanksInfo(): Promise<WordBanksInfo> {
   logger.info('vocabularyApi.getBanksInfo');
   const { data } = await axiosForBackend.get<WordBanksInfo>(
-    '/api/vocabulary/banks',
+    '/vocabulary/banks',
   );
   return data;
 }
@@ -48,7 +48,7 @@ export async function toggleFavorite(
 ): Promise<{ isFavorite: boolean }> {
   logger.info(`vocabularyApi.toggleFavorite wordId=${wordId}`);
   const { data } = await axiosForBackend.post<{ isFavorite: boolean }>(
-    `/api/vocabulary/words/${wordId}/favorite`,
+    `/vocabulary/words/${wordId}/favorite`,
   );
   return data;
 }
@@ -66,7 +66,7 @@ export async function getFavorites(
 ): Promise<WordListResponse> {
   logger.info('vocabularyApi.getFavorites', params);
   const { data } = await axiosForBackend.get<WordListResponse>(
-    '/api/vocabulary/favorites',
+    '/vocabulary/favorites',
     { params },
   );
   return data;

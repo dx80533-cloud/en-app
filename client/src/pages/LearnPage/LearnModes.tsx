@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { logger } from '@lark-apaas/client-toolkit/logger';
+import { logger } from '@client/src/lib/logger';
 import {
   Volume2,
   ChevronRight,

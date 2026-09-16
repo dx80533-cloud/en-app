@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { logger } from '@lark-apaas/client-toolkit/logger';
+import { logger } from '@client/src/lib/logger';
 import { listeningApi } from '@/api';
-import type { ListeningQuestion, ListeningResult } from '@shared/api.interface';
+import type {
+  ListeningQuestionType, ListeningQuestion, ListeningResult } from '@shared/api.interface';
 import ListeningSetup from './ListeningSetup';
 import ListeningInProgress from './ListeningInProgress';
 import ListeningResultView from './ListeningResultView';
@@ -31,7 +32,7 @@ const ListeningPage: React.FC = () => {
         count: selectedCount,
         bank: 'gept',
         level: selectedLevel,
-        types: selectedTypes as Parameters<typeof listeningApi.generateListening>[0]['types'],
+        types: selectedTypes as ListeningQuestionType[],
         mode: selectedMode as 'random' | 'review' | 'weak',
       });
       setQuestions(qs);

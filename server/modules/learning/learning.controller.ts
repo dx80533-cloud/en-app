@@ -7,12 +7,12 @@ import {
   Req,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { NeedLogin } from '@lark-apaas/fullstack-nestjs-core';
+import { NeedLogin } from '../../common/decorators/need-login.decorator';
 import { LearningService } from './learning.service';
 import type {
   VocabWordWithProgress,
   LearningSessionResult,
-} from '@shared/api.interface';
+} from '../../../shared/api.interface';
 
 interface DailyGoalResponse {
   dailyGoal: number;
@@ -40,7 +40,7 @@ export class LearningController {
   ): Promise<VocabWordWithProgress[]> {
     const limitNum = limit ? parseInt(limit, 10) : 10;
     const modeVal = (mode as 'review' | 'new' | 'all') || 'all';
-    const userId = req.userContext?.userId;
+    const userId = req.user?.id;
     return this.learningService.getDueWords(
       limitNum,
       modeVal,
@@ -56,7 +56,7 @@ export class LearningController {
     @Req() req: Request,
     @Body() body: SubmitAnswerBody,
   ): Promise<LearningSessionResult> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.learningService.submitAnswer(
       userId,
       body.wordId,
@@ -68,7 +68,7 @@ export class LearningController {
   @NeedLogin()
   @Get('daily-goal')
   async getDailyGoal(@Req() req: Request): Promise<DailyGoalResponse> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.learningService.getDailyGoal(userId);
   }
 }

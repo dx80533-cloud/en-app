@@ -1,12 +1,12 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import { DRIZZLE_DATABASE, type PostgresJsDatabase } from '@lark-apaas/fullstack-nestjs-core';
+import { DRIZZLE_DATABASE, type VocabDb } from '../../database/database.module';
 import {
   vocabUserStats,
   vocabQuizRecords,
   vocabUserProgress,
-} from '@server/database/schema';
+} from '../../database/schema';
 import { eq, and, desc, count } from 'drizzle-orm';
-import type { UserStats } from '@shared/api.interface';
+import type { UserStats } from '../../../shared/api.interface';
 
 interface WordProgressResponse {
   new: number;
@@ -32,7 +32,7 @@ interface QuizRecordItem {
 export class StatsService {
   private readonly logger = new Logger(StatsService.name);
 
-  constructor(@Inject(DRIZZLE_DATABASE) private readonly db: PostgresJsDatabase) {}
+  constructor(@Inject(DRIZZLE_DATABASE) private readonly db: VocabDb) {}
 
   async getOverview(userId: string): Promise<UserStats> {
     try {

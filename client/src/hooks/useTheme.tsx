@@ -5,8 +5,8 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
-import { logger } from '@lark-apaas/client-toolkit/logger';
-import { useCurrentUserProfile } from '@lark-apaas/client-toolkit/hooks/useCurrentUserProfile';
+import { logger } from '@client/src/lib/logger';
+import { useAuth } from '@client/src/hooks/useAuth';
 import { preferencesApi } from '@client/src/api';
 import { THEMES, type ThemeType, type UserSettings } from '@shared/api.interface';
 
@@ -25,7 +25,7 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }): React.ReactElement {
-  const userInfo = useCurrentUserProfile();
+  const { userInfo } = useAuth();
   const isLoggedIn = !!userInfo?.user_id;
 
   const [theme, setThemeState] = useState<ThemeType>(() => {

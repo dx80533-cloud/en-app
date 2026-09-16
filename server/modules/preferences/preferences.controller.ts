@@ -1,8 +1,8 @@
 import { Controller, Get, Put, Body, Req, BadRequestException } from '@nestjs/common';
 import type { Request } from 'express';
-import { NeedLogin } from '@lark-apaas/fullstack-nestjs-core';
+import { NeedLogin } from '../../common/decorators/need-login.decorator';
 import { PreferencesService } from './preferences.service';
-import type { ThemeType, UserPreferences, UserSettings } from '@shared/api.interface';
+import type { ThemeType, UserPreferences, UserSettings } from '../../../shared/api.interface';
 
 const VALID_THEMES: string[] = [
   'default',
@@ -24,7 +24,7 @@ export class PreferencesController {
   @NeedLogin()
   @Get()
   async getPreferences(@Req() req: Request): Promise<UserPreferences> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.preferencesService.getPreferences(userId);
   }
 
@@ -34,7 +34,7 @@ export class PreferencesController {
     @Req() req: Request,
     @Body() body: ThemeUpdateDto,
   ): Promise<{ theme: ThemeType }> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     const theme = body?.theme;
     if (!theme || !VALID_THEMES.includes(theme)) {
       throw new BadRequestException('無效的主題類型');
@@ -48,7 +48,7 @@ export class PreferencesController {
     @Req() req: Request,
     @Body() body: UserSettings,
   ): Promise<{ settings: UserSettings }> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.preferencesService.updateSettings(userId, body);
   }
 }

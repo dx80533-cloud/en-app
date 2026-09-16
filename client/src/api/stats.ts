@@ -1,10 +1,10 @@
-import { logger } from '@lark-apaas/client-toolkit/logger';
-import { axiosForBackend } from '@lark-apaas/client-toolkit/utils/getAxiosForBackend';
+import { logger } from '@client/src/lib/logger';
+import { axiosForBackend } from '@client/src/api/client';
 import type { UserStats } from '@shared/api.interface';
 
 export async function getOverview(): Promise<UserStats> {
   logger.info('statsApi.getOverview');
-  const { data } = await axiosForBackend.get<UserStats>('/api/stats/overview');
+  const { data } = await axiosForBackend.get<UserStats>('/stats/overview');
   return data;
 }
 
@@ -23,7 +23,7 @@ export async function getRecentQuizzes(
 ): Promise<QuizRecord[]> {
   logger.info(`statsApi.getRecentQuizzes limit=${limit ?? 'default'}`);
   const { data } = await axiosForBackend.get<QuizRecord[]>(
-    '/api/stats/recent-quizzes',
+    '/stats/recent-quizzes',
     { params: limit ? { limit } : {} },
   );
   return data;
@@ -41,7 +41,7 @@ export interface WordProgress {
 export async function getWordProgress(): Promise<WordProgress> {
   logger.info('statsApi.getWordProgress');
   const { data } = await axiosForBackend.get<WordProgress>(
-    '/api/stats/word-progress',
+    '/stats/word-progress',
   );
   return data;
 }

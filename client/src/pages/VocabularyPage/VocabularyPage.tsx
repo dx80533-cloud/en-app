@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { logger } from '@lark-apaas/client-toolkit/logger';
+import { logger } from '@client/src/lib/logger';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import {

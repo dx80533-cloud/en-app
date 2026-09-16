@@ -1,13 +1,13 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import { DRIZZLE_DATABASE, type PostgresJsDatabase } from '@lark-apaas/fullstack-nestjs-core';
-import { eq, and, inArray, sql, desc, gt } from 'drizzle-orm';
+import { DRIZZLE_DATABASE, type VocabDb } from '../../database/database.module';
+import { eq, and, inArray, sql, desc, gt, like } from 'drizzle-orm';
 import {
   vocabWords,
   vocabUserProgress,
   vocabUserStats,
   vocabQuizRecords,
-} from '@server/database/schema';
-import type { QuizQuestion, QuizResult, VocabWord } from '@shared/api.interface';
+} from '../../database/schema';
+import type { QuizQuestion, QuizResult, VocabWord } from '../../../shared/api.interface';
 
 interface GenerateOptions {
   count: number;
@@ -47,7 +47,7 @@ const REVIEW_INTERVALS_DAYS: number[] = [0, 1, 2, 4, 7, 15, 30, 60, 120, 180, 36
 export class QuizService {
   private readonly logger = new Logger(QuizService.name);
 
-  constructor(@Inject(DRIZZLE_DATABASE) private readonly db: PostgresJsDatabase) {}
+  constructor(@Inject(DRIZZLE_DATABASE) private readonly db: VocabDb) {}
 
   async generate(opts: GenerateOptions): Promise<QuizQuestion[]> {
     const { count, bank, level, types, mode, userId } = opts;
@@ -125,9 +125,9 @@ export class QuizService {
       correctAnswer: wordMap.get(a.wordId) ?? '',
     }));
 
-    await this.db.transaction(async (tx) => {
+    this.db.transaction((tx) => {
       // Insert quiz record
-      await tx.insert(vocabQuizRecords).values({
+      tx.insert(vocabQuizRecords).values({
         userId,
         quizType,
         bank,
@@ -141,16 +141,16 @@ export class QuizService {
       });
 
       // Update user stats
-      const existingStats = await tx
+      const existingStats = tx
         .select()
         .from(vocabUserStats)
-        .where(sql`(${vocabUserStats.userId}).user_id = ${userId}`)
-        .limit(1);
+        .where(eq(vocabUserStats.userId, userId))
+        .limit(1).all();
 
       const wrongCount = totalQuestions - correctCount;
 
       if (existingStats.length > 0) {
-        await tx
+        tx
           .update(vocabUserStats)
           .set({
             totalQuizzes: existingStats[0].totalQuizzes + 1,
@@ -160,9 +160,9 @@ export class QuizService {
             totalWrong: existingStats[0].totalWrong + wrongCount,
             updatedAt: new Date(),
           })
-          .where(sql`(${vocabUserStats.userId}).user_id = ${userId}`);
+          .where(eq(vocabUserStats.userId, userId));
       } else {
-        await tx.insert(vocabUserStats).values({
+        tx.insert(vocabUserStats).values({
           userId,
           totalQuizzes: 1,
           xp: xpEarned,
@@ -174,7 +174,7 @@ export class QuizService {
 
       // Update each word's progress
       for (const answer of answers) {
-        await this.updateProgress(tx, userId, answer.wordId, answer.correct);
+        this.updateProgress(tx, userId, answer.wordId, answer.correct);
       }
     });
 
@@ -215,7 +215,7 @@ export class QuizService {
         .innerJoin(vocabWords, eq(vocabUserProgress.wordId, vocabWords.id))
         .where(
           and(
-            sql`(${vocabUserProgress.userId}).user_id = ${userId}`,
+            eq(vocabUserProgress.userId, userId),
             sql`${vocabUserProgress.status} != 'new'`,
             ...baseConditions,
           ),
@@ -234,13 +234,13 @@ export class QuizService {
         .innerJoin(vocabWords, eq(vocabUserProgress.wordId, vocabWords.id))
         .where(
           and(
-            sql`(${vocabUserProgress.userId}).user_id = ${userId}`,
+            eq(vocabUserProgress.userId, userId),
             gt(vocabUserProgress.wrongCount, 0),
             ...baseConditions,
           ),
         )
         .orderBy(
-          sql`(${vocabUserProgress.wrongCount}::float / NULLIF(${vocabUserProgress.correctCount} + ${vocabUserProgress.wrongCount}, 0)) desc`,
+          sql`((${vocabUserProgress.wrongCount} * 1.0) / MAX(${vocabUserProgress.correctCount} + ${vocabUserProgress.wrongCount}, 1)) desc`,
         )
         .limit(limit);
 
@@ -269,7 +269,7 @@ export class QuizService {
   ) {
     const conditions = [];
     if (bank) {
-      conditions.push(sql`${bank} = ANY(${vocabWords.banks})`);
+      conditions.push(like(vocabWords.banks, `%"${bank}"%`));
     }
     if (level) {
       conditions.push(eq(vocabWords.level, level));
@@ -385,22 +385,22 @@ export class QuizService {
   }
 
   // Update user progress for a single word answer
-  private async updateProgress(
-    tx: PostgresJsDatabase,
+  private updateProgress(
+    tx: VocabDb,
     userId: string,
     wordId: string,
     correct: boolean,
-  ): Promise<void> {
-    const existing = await tx
+  ): void {
+    const existing = tx
       .select()
       .from(vocabUserProgress)
       .where(
         and(
-          sql`(${vocabUserProgress.userId}).user_id = ${userId}`,
+          eq(vocabUserProgress.userId, userId),
           eq(vocabUserProgress.wordId, wordId),
         ),
       )
-      .limit(1);
+      .limit(1).all();
 
     const now = new Date();
 
@@ -411,7 +411,7 @@ export class QuizService {
       const nextReviewDays = REVIEW_INTERVALS_DAYS[Math.min(newFamiliarity, REVIEW_INTERVALS_DAYS.length - 1)];
       const nextReviewDate = new Date(now.getTime() + nextReviewDays * 24 * 60 * 60 * 1000);
 
-      await tx.insert(vocabUserProgress).values({
+      tx.insert(vocabUserProgress).values({
         userId,
         wordId,
         status: newStatus,
@@ -452,7 +452,7 @@ export class QuizService {
     const nextReviewDays = REVIEW_INTERVALS_DAYS[Math.min(newFamiliarity, REVIEW_INTERVALS_DAYS.length - 1)];
     const nextReviewDate = new Date(now.getTime() + nextReviewDays * 24 * 60 * 60 * 1000);
 
-    await tx
+    tx
       .update(vocabUserProgress)
       .set({
         status: newStatus,

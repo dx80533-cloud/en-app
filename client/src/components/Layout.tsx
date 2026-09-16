@@ -13,7 +13,7 @@ import {
   Settings,
   User as UserIcon,
 } from 'lucide-react';
-import { useCurrentUserProfile } from '@lark-apaas/client-toolkit/hooks/useCurrentUserProfile';
+import { useAuth } from '@client/src/hooks/useAuth';
 import * as authApi from '@client/src/api/auth';
 import { Image } from '@client/src/components/ui/image';
 
@@ -38,10 +38,9 @@ const navItems: NavItem[] = [
 ];
 
 const Layout: React.FC = () => {
-  const userInfo = useCurrentUserProfile();
+  const { userInfo, isLoggedIn, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const isLoggedIn = !!userInfo?.user_id;
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -59,7 +58,7 @@ const Layout: React.FC = () => {
   };
 
   const handleLogout = (): void => {
-    authApi.signOut();
+    logout();
   };
 
   return (
@@ -112,9 +111,9 @@ const Layout: React.FC = () => {
                   onClick={() => setMenuOpen(!menuOpen)}
                   className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-muted transition-colors"
                 >
-                  {userInfo.avatar ? (
+                  {userInfo?.avatar ? (
                     <Image
-                      src={userInfo.avatar}
+                      src={userInfo?.avatar}
                       alt="avatar"
                       className="w-8 h-8 rounded-full object-cover"
                     />
@@ -124,7 +123,7 @@ const Layout: React.FC = () => {
                     </div>
                   )}
                   <span className="text-sm font-medium text-foreground max-w-[100px] truncate">
-                    {userInfo.name || '使用者'}
+                    {userInfo?.name || '使用者'}
                   </span>
                 </button>
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { logger } from '@lark-apaas/client-toolkit/logger';
+import { logger } from '@client/src/lib/logger';
 import { quizApi } from '@/api';
 import type { QuizQuestion, QuizResult } from '@shared/api.interface';
 import QuizSetup from './QuizSetup';

@@ -1,5 +1,5 @@
-import { logger } from '@lark-apaas/client-toolkit/logger';
-import { axiosForBackend } from '@lark-apaas/client-toolkit/utils/getAxiosForBackend';
+import { logger } from '@client/src/lib/logger';
+import { axiosForBackend } from '@client/src/api/client';
 import type { ListeningQuestion, ListeningResult, ListeningQuestionType } from '@shared/api.interface';
 
 export interface GenerateListeningParams {
@@ -21,7 +21,7 @@ export async function generateListening(
   if (params.types && params.types.length > 0) queryParams.types = params.types.join(',');
   if (params.mode) queryParams.mode = params.mode;
   const { data } = await axiosForBackend.get<ListeningQuestion[]>(
-    '/api/listening/generate',
+    '/listening/generate',
     { params: queryParams },
   );
   return data;
@@ -45,7 +45,7 @@ export interface SubmitListeningData {
 export async function submitListening(data: SubmitListeningData): Promise<ListeningResult> {
   logger.info('listeningApi.submitListening', { count: data.answers.length });
   const { data: result } = await axiosForBackend.post<ListeningResult>(
-    '/api/listening/submit',
+    '/listening/submit',
     data,
   );
   return result;

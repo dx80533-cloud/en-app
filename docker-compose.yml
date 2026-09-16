@@ -1,0 +1,20 @@
+services:
+  vocab-party:
+    build: .
+    container_name: vocab-party
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=3000
+      - DB_PATH=data/vocab.db
+      - SEED_PATH=data/wordbank.json
+      - JWT_SECRET=${JWT_SECRET:-please-change-me}
+      - COOKIE_SECURE=${COOKIE_SECURE:-false}
+      - APP_BASE_URL=${APP_BASE_URL:-https://your-domain.example.com}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+    volumes:
+      # 資料庫與字庫檔掛出來，重啟/升級不遺失
+      - ./data:/app/data

@@ -5,9 +5,9 @@ import {
   Req,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { NeedLogin } from '@lark-apaas/fullstack-nestjs-core';
+import { NeedLogin } from '../../common/decorators/need-login.decorator';
 import { StatsService } from './stats.service';
-import type { UserStats } from '@shared/api.interface';
+import type { UserStats } from '../../../shared/api.interface';
 
 interface WordProgressResponse {
   new: number;
@@ -36,7 +36,7 @@ export class StatsController {
   @NeedLogin()
   @Get('overview')
   async getOverview(@Req() req: Request): Promise<UserStats> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.statsService.getOverview(userId);
   }
 
@@ -46,7 +46,7 @@ export class StatsController {
     @Req() req: Request,
     @Query('limit') limit?: string,
   ): Promise<QuizRecordItem[]> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     const limitNum = limit ? parseInt(limit, 10) : 5;
     return this.statsService.getRecentQuizzes(userId, limitNum);
   }
@@ -54,7 +54,7 @@ export class StatsController {
   @NeedLogin()
   @Get('word-progress')
   async getWordProgress(@Req() req: Request): Promise<WordProgressResponse> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.statsService.getWordProgress(userId);
   }
 }

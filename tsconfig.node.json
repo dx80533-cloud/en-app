@@ -1,17 +1,23 @@
 {
-  "extends": "@lark-apaas/fullstack-presets/lib/simple/tsconfig/tsconfig.node.json",
   "compilerOptions": {
-    "baseUrl": "./",
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
     "outDir": "./dist",
-    "preserveWatchOutput": true,
-    "paths": {
-      "@server/*": ["server/*"],
-      "@shared/*": ["shared/*"],
-    }
-  },
-  "watchOptions": {
-    "excludeDirectories": ["node_modules/**"]
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": false,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["node"]
   },
   "include": ["server/**/*", "shared/**/*.ts"],
-  "exclude": ["node_modules", "dist", "client", "source_package", "**/*.spec.ts", "**/*.e2e-spec.ts"],
+  "exclude": ["node_modules", "dist", "client"]
 }

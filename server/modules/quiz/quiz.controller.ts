@@ -8,9 +8,9 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import { NeedLogin } from '@lark-apaas/fullstack-nestjs-core';
+import { NeedLogin } from '../../common/decorators/need-login.decorator';
 import { QuizService } from './quiz.service';
-import type { QuizQuestion, QuizResult } from '@shared/api.interface';
+import type { QuizQuestion, QuizResult } from '../../../shared/api.interface';
 
 interface SubmitQuizDto {
   quizType: string;
@@ -48,7 +48,7 @@ export class QuizController {
       : ['en2zh', 'zh2en', 'spelling', 'cloze'];
     const modeVal = mode ?? 'random';
 
-    const userId = req?.userContext?.userId ?? null;
+    const userId = req?.user?.id ?? null;
 
     if (modeVal === 'review' && !userId) {
       throw new BadRequestException('複習模式需登入');
@@ -73,7 +73,7 @@ export class QuizController {
     @Req() req: Request,
     @Body() body: SubmitQuizDto,
   ): Promise<QuizResult> {
-    const { userId } = req.userContext;
+    const userId = req.user!.id;
     return this.quizService.submit(userId, body);
   }
 }

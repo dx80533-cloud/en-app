@@ -1,8 +1,10 @@
 import { APP_FILTER } from '@nestjs/core';
 import { Module } from '@nestjs/common';
-import { PlatformModule } from '@lark-apaas/fullstack-nestjs-core';
+import { ConfigModule } from '@nestjs/config';
 
 import { GlobalExceptionFilter } from './common/filters/exception.filter';
+import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { VocabularyModule } from './modules/vocabulary/vocabulary.module';
 import { LearningModule } from './modules/learning/learning.module';
 import { StatsModule } from './modules/stats/stats.module';
@@ -14,8 +16,13 @@ import { ViewModule } from './modules/view/view.module';
 
 @Module({
   imports: [
-    PlatformModule.forRoot(),
-    // ====== @route-section: business-modules START ======
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', 'data/.env'],
+    }),
+    DatabaseModule,
+    AuthModule,
+    // ====== business modules ======
     VocabularyModule,
     LearningModule,
     StatsModule,
@@ -23,7 +30,6 @@ import { ViewModule } from './modules/view/view.module';
     ListeningModule,
     AdminModule,
     PreferencesModule,
-    // ====== @route-section: business-modules END ======
 
     ViewModule,
   ],

@@ -1,8 +1,8 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import { DRIZZLE_DATABASE, type PostgresJsDatabase } from '@lark-apaas/fullstack-nestjs-core';
-import { vocabUserPreferences } from '@server/database/schema';
+import { DRIZZLE_DATABASE, type VocabDb } from '../../database/database.module';
+import { vocabUserPreferences } from '../../database/schema';
 import { eq } from 'drizzle-orm';
-import type { ThemeType, UserSettings } from '@shared/api.interface';
+import type { ThemeType, UserSettings } from '../../../shared/api.interface';
 
 interface PrefRecord {
   id: string;
@@ -17,7 +17,7 @@ interface PrefRecord {
 export class PreferencesService {
   private readonly logger = new Logger(PreferencesService.name);
 
-  constructor(@Inject(DRIZZLE_DATABASE) private readonly db: PostgresJsDatabase) {}
+  constructor(@Inject(DRIZZLE_DATABASE) private readonly db: VocabDb) {}
 
   async getPreferences(userId: string): Promise<{ theme: ThemeType; settings: UserSettings }> {
     const rows = await this.db

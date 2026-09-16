@@ -3,32 +3,28 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { AppContainer } from '@lark-apaas/client-toolkit/components/AppContainer';
-import { ErrorRender } from '@lark-apaas/client-toolkit/components/ErrorRender';
 
 import RoutesComponent from './app.tsx';
 import './index.css';
 import { createPortal } from 'react-dom';
 import { Toaster } from '@client/src/components/ui/sonner';
 
-const CLIENT_BASE_PATH = process.env.CLIENT_BASE_PATH || '/';
+const CLIENT_BASE_PATH = '/';
 
 const MainApp = () => {
   return (
     <BrowserRouter basename={CLIENT_BASE_PATH}>
-      <AppContainer defaultTheme="light">
-        <ErrorBoundary
-          fallbackRender={({ error, resetErrorBoundary }) => (
-            <ErrorRender
-              error={error as Error}
-              resetErrorBoundary={resetErrorBoundary}
-            />
-          )}
-        >
-          <RoutesComponent />
-          {createPortal(<Toaster />, document.body)}
-        </ErrorBoundary>
-      </AppContainer>
+      <ErrorBoundary
+        fallbackRender={({ error }: { error: unknown }) => (
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <h2>頁面發生錯誤</h2>
+            <p style={{ color: '#666' }}>{error instanceof Error ? error.message : '未知錯誤'}</p>
+          </div>
+        )}
+      >
+        <RoutesComponent />
+        {createPortal(<Toaster />, document.body)}
+      </ErrorBoundary>
     </BrowserRouter>
   );
 };

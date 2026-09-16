@@ -5,10 +5,10 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { DRIZZLE_DATABASE, type PostgresJsDatabase } from '@lark-apaas/fullstack-nestjs-core';
-import { eq, count, ilike, or, desc, asc } from 'drizzle-orm';
-import { vocabWords } from '@server/database/schema';
-import type { VocabWord, ImportResult, WordListResponse } from '@shared/api.interface';
+import { DRIZZLE_DATABASE, type VocabDb } from '../../database/database.module';
+import { eq, count, like, or, desc, asc } from 'drizzle-orm';
+import { vocabWords } from '../../database/schema';
+import type { VocabWord, ImportResult, WordListResponse } from '../../../shared/api.interface';
 
 type WordInsert = typeof vocabWords.$inferInsert;
 type WordRow = typeof vocabWords.$inferSelect;
@@ -50,7 +50,7 @@ export class AdminService {
   private readonly logger = new Logger(AdminService.name);
 
   constructor(
-    @Inject(DRIZZLE_DATABASE) private readonly db: PostgresJsDatabase,
+    @Inject(DRIZZLE_DATABASE) private readonly db: VocabDb,
   ) {}
 
   async listWords(params: {
@@ -64,7 +64,7 @@ export class AdminService {
     const offset = (safePage - 1) * safePageSize;
 
     const where = search
-      ? or(ilike(vocabWords.word, `%${search}%`), ilike(vocabWords.zh, `%${search}%`))
+      ? or(like(vocabWords.word, `%${search}%`), like(vocabWords.zh, `%${search}%`))
       : undefined;
 
     const baseQuery = this.db.select().from(vocabWords);
@@ -108,8 +108,6 @@ export class AdminService {
       exampleZh: input.exampleZh?.trim() || null,
       banks: input.banks ?? [],
       level: input.level?.trim() || null,
-      createdBy: userId,
-      updatedBy: userId,
     };
 
     const rows = await this.db
@@ -145,7 +143,6 @@ export class AdminService {
       throw new BadRequestException('未提供可更新欄位');
     }
 
-    patch.updatedBy = userId;
 
     const updated = await this.db
       .update(vocabWords)
@@ -244,7 +241,6 @@ export class AdminService {
           if (word.level && !existing[0].level) patch.level = word.level;
 
           if (Object.keys(patch).length > 0) {
-            patch.updatedBy = userId;
             await this.db
               .update(vocabWords)
               .set(patch)
@@ -268,8 +264,6 @@ export class AdminService {
             exampleZh: word.exampleZh || null,
             banks: word.banks ?? [],
             level: word.level || null,
-            createdBy: userId,
-            updatedBy: userId,
           };
           await this.db.insert(vocabWords).values(values);
           result.imported += 1;

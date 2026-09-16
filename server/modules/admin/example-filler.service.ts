@@ -1,7 +1,7 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
-import { DRIZZLE_DATABASE, type PostgresJsDatabase } from '@lark-apaas/fullstack-nestjs-core';
+import { DRIZZLE_DATABASE, type VocabDb } from '../../database/database.module';
 import { eq, or, isNull, sql } from 'drizzle-orm';
-import { vocabWords } from '@server/database/schema';
+import { vocabWords } from '../../database/schema';
 
 interface FillOptions {
   limit: number;
@@ -23,7 +23,7 @@ export class ExampleFillerService {
   private readonly DICTIONARY_API_BASE = 'https://api.dictionaryapi.dev/api/v2/entries/en';
 
   constructor(
-    @Inject(DRIZZLE_DATABASE) private readonly db: PostgresJsDatabase,
+    @Inject(DRIZZLE_DATABASE) private readonly db: VocabDb,
   ) {}
 
   async fillMissingExamples(
@@ -63,10 +63,6 @@ export class ExampleFillerService {
             .set({
               example,
               exampleZh: '',
-              updatedBy: sql`CASE
-                WHEN (current_setting('app.user_id'::text, true) = ''::text) THEN NULL
-                ELSE current_setting('app.user_id'::text, true)::user_profile
-              END`,
             })
             .where(eq(vocabWords.id, w.id));
           filled += 1;

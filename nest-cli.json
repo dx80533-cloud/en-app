@@ -4,21 +4,6 @@
   "sourceRoot": "server",
   "compilerOptions": {
     "deleteOutDir": false,
-    "tsConfigPath": "tsconfig.node.json",
-    "typeCheck": false,
-    "builder": {
-      "type": "swc",
-      "options": {
-        "filenames": ["server", "shared"],
-        "stripLeadingPaths": false
-      }
-    },
-    "assets": [
-      {
-        "include": "capabilities/**/*.json",
-        "outDir": "dist/server",
-        "watchAssets": true
-      }
-    ]
+    "tsConfigPath": "tsconfig.node.json"
   }
 }
