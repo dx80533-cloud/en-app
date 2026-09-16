@@ -1,0 +1,8 @@
+{"cases":[
+  {"id":1,"priority":"p0","description":"打開首頁，預期顯示「字庫派對」品牌與學習儀表板卡片"},
+  {"id":2,"priority":"p0","description":"點擊導航「學習」，預期進入學習頁並顯示題目卡片"},
+  {"id":3,"priority":"p0","description":"點擊導航「測驗」，預期進入測驗設定頁顯示開始按鈕"},
+  {"id":4,"priority":"p0","description":"點擊導航「字庫」，預期顯示單字列表與至少 3 個單字項目"},
+  {"id":5,"priority":"p1","description":"點擊導航「收藏」，預期顯示收藏頁空態或收藏列表"},
+  {"id":6,"priority":"p1","description":"點擊導航「關於」，預期顯示資料來源說明與字庫統計"}
+]}

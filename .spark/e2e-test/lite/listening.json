@@ -1,0 +1,1 @@
+{"cases":[{"id":1,"priority":"p0","description":"打開聽力練習頁 /listening，預期頁面顯示「GEPT 聽力練習」標題與三個級別選項"},{"id":2,"priority":"p0","description":"導航列應包含「聽力」入口，點擊後進入 /listening 頁面"},{"id":3,"priority":"p1","description":"聽力練習頁應顯示四種題型選項與題數選擇按鈕"},{"id":4,"priority":"p1","description":"「開始聽力練習」按鈕應存在並可點擊"}]}

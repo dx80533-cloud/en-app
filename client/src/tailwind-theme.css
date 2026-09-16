@@ -1,0 +1,685 @@
+/* ============================================
+   預設主題（經典學院） — 明亮藍紫，活潑好讀
+   ============================================ */
+:root {
+  --button-outline: rgba(0, 0, 0, 0.08);
+  --badge-outline: rgba(0, 0, 0, 0.04);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0, 0, 0, 0.03);
+  --elevate-2: rgba(0, 0, 0, 0.08);
+
+  --background: hsl(210 40% 98%);
+  --foreground: hsl(222 47% 11%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+  --primary: hsl(243 75% 59%);
+  --primary-foreground: hsl(210 40% 98%);
+  --secondary: hsl(220 14% 96%);
+  --secondary-foreground: hsl(222 47% 11%);
+  --muted: hsl(220 14% 96%);
+  --muted-foreground: hsl(215 16% 47%);
+  --accent: hsl(262 83% 58%);
+  --accent-foreground: hsl(210 40% 98%);
+  --info: hsl(221 83% 53%);
+  --info-foreground: hsl(210 40% 98%);
+  --destructive: hsl(2 84% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(142 71% 45%);
+  --success-foreground: hsl(210 40% 98%);
+  --warning: hsl(25 95% 53%);
+  --warning-foreground: hsl(210 40% 98%);
+  --border: hsl(214 32% 91%);
+  --input: hsl(214 32% 91%);
+  --ring: hsl(243 75% 59%);
+
+  --chart-1: hsl(243 75% 59%);
+  --chart-2: hsl(189 94% 43%);
+  --chart-3: hsl(46 100% 50%);
+  --chart-4: hsl(25 95% 53%);
+  --chart-5: hsl(288 75% 65%);
+
+  --sidebar: hsl(0 0% 100%);
+  --sidebar-foreground: hsl(222 47% 11%);
+  --sidebar-primary: hsl(243 75% 59%);
+  --sidebar-primary-foreground: hsl(210 40% 98%);
+  --sidebar-accent: hsl(220 14% 96%);
+  --sidebar-accent-foreground: hsl(243 75% 59%);
+  --sidebar-border: hsl(214 32% 91%);
+  --sidebar-ring: hsl(243 75% 59%);
+
+  --primary-border: hsl(from hsl(243 75% 59%) h s calc(l + var(--opaque-button-border-intensity)));
+  --secondary-border: hsl(from hsl(220 14% 96%) h s calc(l + var(--opaque-button-border-intensity)));
+  --destructive-border: hsl(from hsl(2 84% 60%) h s calc(l + var(--opaque-button-border-intensity)));
+  --accent-border: hsl(from hsl(262 83% 58%) h s calc(l + var(--opaque-button-border-intensity)));
+  --muted-border: hsl(from hsl(220 14% 96%) h s calc(l + var(--opaque-button-border-intensity)));
+
+  --font-sans:
+    'LarkHackSafariFont', 'LarkEmojiFont', 'LarkChineseQuote', '-apple-system',
+    'BlinkMacSystemFont', 'Helvetica Neue', 'Tahoma', 'PingFang SC',
+    'Microsoft Yahei', 'Arial', 'Hiragino Sans GB', 'sans-serif',
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-serif:
+    'Geist', 'Geist Fallback', ui-serif, Georgia, Cambria, 'Times New Roman',
+    Times, serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Source Code Pro', monospace;
+
+  --radius: 0.75rem;
+  --shadow-x: 0px;
+  --shadow-y: 4px;
+  --shadow-blur: 20px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.06;
+  --shadow-color: #000000;
+  --shadow-2xs: 0 1px 2px 0 hsl(220 30% 10% / 0.04);
+  --shadow-xs: 0 1px 3px 0 hsl(220 30% 10% / 0.06), 0 1px 2px -1px hsl(220 30% 10% / 0.04);
+  --shadow-sm: 0 2px 6px -1px hsl(220 30% 10% / 0.06), 0 1px 2px -2px hsl(220 30% 10% / 0.04);
+  --shadow: 0 4px 12px -2px hsl(220 30% 10% / 0.08), 0 2px 6px -3px hsl(220 30% 10% / 0.06);
+  --shadow-md: 0 8px 20px -4px hsl(220 30% 10% / 0.10), 0 4px 8px -4px hsl(220 30% 10% / 0.08);
+  --shadow-lg: 0 12px 28px -6px hsl(220 30% 10% / 0.12), 0 6px 12px -6px hsl(220 30% 10% / 0.10);
+  --shadow-xl: 0 20px 40px -10px hsl(220 30% 10% / 0.15), 0 10px 20px -10px hsl(220 30% 10% / 0.12);
+  --shadow-2xl: 0 28px 60px -12px hsl(220 30% 10% / 0.18);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+/* ============================================
+   暗夜霓虹主題 — 深色背景 + 螢光色系
+   ============================================ */
+[data-theme="midnight"],
+.theme-midnight {
+  --button-outline: rgba(255, 255, 255, 0.08);
+  --badge-outline: rgba(255, 255, 255, 0.04);
+  --elevate-1: rgba(255, 255, 255, 0.04);
+  --elevate-2: rgba(255, 255, 255, 0.08);
+
+  --background: hsl(240 25% 8%);
+  --foreground: hsl(220 15% 92%);
+  --card: hsl(240 22% 13%);
+  --card-foreground: hsl(220 15% 92%);
+  --popover: hsl(240 22% 13%);
+  --popover-foreground: hsl(220 15% 92%);
+  --primary: hsl(288 95% 68%);
+  --primary-foreground: hsl(240 25% 8%);
+  --secondary: hsl(240 20% 18%);
+  --secondary-foreground: hsl(220 15% 92%);
+  --muted: hsl(240 20% 18%);
+  --muted-foreground: hsl(225 10% 55%);
+  --accent: hsl(190 95% 60%);
+  --accent-foreground: hsl(240 25% 8%);
+  --info: hsl(217 91% 60%);
+  --info-foreground: hsl(240 25% 8%);
+  --destructive: hsl(340 90% 62%);
+  --destructive-foreground: hsl(240 25% 8%);
+  --success: hsl(150 85% 55%);
+  --success-foreground: hsl(240 25% 8%);
+  --warning: hsl(45 100% 60%);
+  --warning-foreground: hsl(240 25% 8%);
+  --border: hsl(240 18% 22%);
+  --input: hsl(240 18% 22%);
+  --ring: hsl(288 95% 68%);
+
+  --chart-1: hsl(288 95% 68%);
+  --chart-2: hsl(190 95% 60%);
+  --chart-3: hsl(45 100% 60%);
+  --chart-4: hsl(340 90% 62%);
+  --chart-5: hsl(150 85% 55%);
+
+  --sidebar: hsl(240 22% 13%);
+  --sidebar-foreground: hsl(220 15% 92%);
+  --sidebar-primary: hsl(288 95% 68%);
+  --sidebar-primary-foreground: hsl(240 25% 8%);
+  --sidebar-accent: hsl(240 20% 18%);
+  --sidebar-accent-foreground: hsl(288 95% 68%);
+  --sidebar-border: hsl(240 18% 22%);
+  --sidebar-ring: hsl(288 95% 68%);
+
+  --primary-border: hsl(from hsl(288 95% 68%) h s calc(l - 12));
+  --secondary-border: hsl(from hsl(240 20% 18%) h s calc(l - 5));
+  --destructive-border: hsl(from hsl(340 90% 62%) h s calc(l - 12));
+  --accent-border: hsl(from hsl(190 95% 60%) h s calc(l - 12));
+  --muted-border: hsl(from hsl(240 20% 18%) h s calc(l - 5));
+
+  --shadow-2xs: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+  --shadow-xs: 0 1px 3px 0 hsl(0 0% 0% / 0.35), 0 1px 2px -1px hsl(0 0% 0% / 0.25);
+  --shadow-sm: 0 2px 6px -1px hsl(0 0% 0% / 0.4), 0 1px 2px -2px hsl(0 0% 0% / 0.3);
+  --shadow: 0 4px 12px -2px hsl(0 0% 0% / 0.45), 0 2px 6px -3px hsl(0 0% 0% / 0.35);
+  --shadow-md: 0 8px 20px -4px hsl(0 0% 0% / 0.5), 0 4px 8px -4px hsl(0 0% 0% / 0.4);
+  --shadow-lg: 0 12px 28px -6px hsl(0 0% 0% / 0.55), 0 6px 12px -6px hsl(0 0% 0% / 0.45);
+  --shadow-xl: 0 20px 40px -10px hsl(0 0% 0% / 0.6), 0 10px 20px -10px hsl(0 0% 0% / 0.5);
+  --shadow-2xl: 0 28px 60px -12px hsl(0 0% 0% / 0.65);
+}
+
+/* ============================================
+   戰鬥陀螺主題 — 金屬質感、紅藍對比
+   ============================================ */
+[data-theme="beyblade"],
+.theme-beyblade {
+  --button-outline: rgba(0, 0, 0, 0.15);
+  --badge-outline: rgba(0, 0, 0, 0.08);
+  --elevate-1: rgba(0, 0, 0, 0.06);
+  --elevate-2: rgba(0, 0, 0, 0.14);
+
+  --background: hsl(220 25% 95%);
+  --foreground: hsl(221 39% 11%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(221 39% 11%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(221 39% 11%);
+  --primary: hsl(0 85% 55%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(221 83% 53%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(220 15% 90%);
+  --muted-foreground: hsl(220 10% 45%);
+  --accent: hsl(45 100% 50%);
+  --accent-foreground: hsl(221 39% 11%);
+  --info: hsl(221 83% 53%);
+  --info-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 85% 55%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(142 76% 36%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(45 100% 50%);
+  --warning-foreground: hsl(221 39% 11%);
+  --border: hsl(220 20% 80%);
+  --input: hsl(220 20% 80%);
+  --ring: hsl(0 85% 55%);
+
+  --chart-1: hsl(0 85% 55%);
+  --chart-2: hsl(221 83% 53%);
+  --chart-3: hsl(45 100% 50%);
+  --chart-4: hsl(280 70% 55%);
+  --chart-5: hsl(142 76% 36%);
+
+  --sidebar: hsl(221 39% 18%);
+  --sidebar-foreground: hsl(220 15% 95%);
+  --sidebar-primary: hsl(0 85% 55%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(221 35% 28%);
+  --sidebar-accent-foreground: hsl(45 100% 50%);
+  --sidebar-border: hsl(221 39% 28%);
+  --sidebar-ring: hsl(0 85% 55%);
+
+  --primary-border: hsl(from hsl(0 85% 55%) h s calc(l - 10));
+  --secondary-border: hsl(from hsl(221 83% 53%) h s calc(l - 10));
+  --destructive-border: hsl(from hsl(0 85% 55%) h s calc(l - 10));
+  --accent-border: hsl(from hsl(45 100% 50%) h s calc(l - 10));
+  --muted-border: hsl(from hsl(220 15% 90%) h s calc(l - 5));
+
+  --radius: 0.5rem;
+  --shadow-2xs: 0 1px 2px 0 hsl(220 30% 10% / 0.08);
+  --shadow-xs: 0 2px 4px 0 hsl(220 30% 10% / 0.1), 0 1px 2px -1px hsl(220 30% 10% / 0.06);
+  --shadow-sm: 0 3px 8px -1px hsl(220 30% 10% / 0.12), 0 2px 4px -2px hsl(220 30% 10% / 0.08);
+  --shadow: 0 6px 16px -2px hsl(220 30% 10% / 0.16), 0 3px 8px -3px hsl(220 30% 10% / 0.12);
+  --shadow-md: 0 10px 24px -4px hsl(220 30% 10% / 0.2), 0 5px 12px -4px hsl(220 30% 10% / 0.16);
+  --shadow-lg: 0 16px 36px -6px hsl(220 30% 10% / 0.24), 0 8px 16px -6px hsl(220 30% 10% / 0.2);
+  --shadow-xl: 0 24px 48px -10px hsl(220 30% 10% / 0.28), 0 12px 24px -10px hsl(220 30% 10% / 0.24);
+  --shadow-2xl: 0 32px 64px -12px hsl(220 30% 10% / 0.32);
+}
+
+/* ============================================
+   日漫主題 — 漫畫風，黑白為底 + 橘色強調
+   ============================================ */
+[data-theme="manga"],
+.theme-manga {
+  --button-outline: rgba(0, 0, 0, 0.2);
+  --badge-outline: rgba(0, 0, 0, 0.1);
+  --elevate-1: rgba(0, 0, 0, 0.04);
+  --elevate-2: rgba(0, 0, 0, 0.1);
+
+  --background: hsl(40 30% 96%);
+  --foreground: hsl(20 14% 10%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(20 14% 10%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(20 14% 10%);
+  --primary: hsl(24 94% 53%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(20 14% 20%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(35 20% 90%);
+  --muted-foreground: hsl(25 8% 45%);
+  --accent: hsl(20 14% 20%);
+  --accent-foreground: hsl(0 0% 100%);
+  --info: hsl(220 14% 20%);
+  --info-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 84% 55%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(120 35% 40%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(44 100% 48%);
+  --warning-foreground: hsl(20 14% 10%);
+  --border: hsl(20 14% 20%);
+  --input: hsl(35 20% 85%);
+  --ring: hsl(24 94% 53%);
+
+  --chart-1: hsl(24 94% 53%);
+  --chart-2: hsl(20 14% 20%);
+  --chart-3: hsl(44 100% 48%);
+  --chart-4: hsl(0 84% 55%);
+  --chart-5: hsl(120 35% 40%);
+
+  --sidebar: hsl(20 14% 15%);
+  --sidebar-foreground: hsl(40 30% 96%);
+  --sidebar-primary: hsl(24 94% 53%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(20 14% 25%);
+  --sidebar-accent-foreground: hsl(44 100% 48%);
+  --sidebar-border: hsl(20 14% 30%);
+  --sidebar-ring: hsl(24 94% 53%);
+
+  --primary-border: hsl(from hsl(24 94% 53%) h s calc(l - 12));
+  --secondary-border: hsl(from hsl(20 14% 20%) h s calc(l - 5));
+  --destructive-border: hsl(from hsl(0 84% 55%) h s calc(l - 12));
+  --accent-border: hsl(from hsl(20 14% 20%) h s calc(l - 5));
+  --muted-border: hsl(from hsl(35 20% 90%) h s calc(l - 5));
+
+  --radius: 0.375rem;
+  --shadow-2xs: 0 1px 0 0 hsl(20 14% 20% / 0.1);
+  --shadow-xs: 0 2px 0 0 hsl(20 14% 20% / 0.15);
+  --shadow-sm: 0 3px 0 0 hsl(20 14% 20% / 0.2);
+  --shadow: 0 4px 0 0 hsl(20 14% 20% / 0.25);
+  --shadow-md: 0 6px 0 0 hsl(20 14% 20% / 0.3);
+  --shadow-lg: 0 8px 0 0 hsl(20 14% 20% / 0.35);
+  --shadow-xl: 0 12px 0 0 hsl(20 14% 20% / 0.4);
+  --shadow-2xl: 0 16px 0 0 hsl(20 14% 20% / 0.45);
+}
+
+/* ============================================
+   彩虹糖果主題 — 馬卡龍色系，圓潤可愛
+   ============================================ */
+[data-theme="candy"],
+.theme-candy {
+  --button-outline: rgba(0, 0, 0, 0.06);
+  --badge-outline: rgba(0, 0, 0, 0.03);
+  --elevate-1: rgba(255, 255, 255, 0.4);
+  --elevate-2: rgba(255, 255, 255, 0.6);
+
+  --background: hsl(320 70% 96%);
+  --foreground: hsl(320 30% 25%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(320 30% 25%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(320 30% 25%);
+  --primary: hsl(330 85% 65%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(190 80% 75%);
+  --secondary-foreground: hsl(200 30% 20%);
+  --muted: hsl(320 50% 92%);
+  --muted-foreground: hsl(320 15% 55%);
+  --accent: hsl(270 80% 75%);
+  --accent-foreground: hsl(270 30% 20%);
+  --info: hsl(220 90% 72%);
+  --info-foreground: hsl(220 30% 20%);
+  --destructive: hsl(0 85% 70%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(150 70% 55%);
+  --success-foreground: hsl(0 0% 100%);
+  --warning: hsl(48 100% 65%);
+  --warning-foreground: hsl(40 30% 20%);
+  --border: hsl(320 50% 88%);
+  --input: hsl(320 50% 88%);
+  --ring: hsl(330 85% 65%);
+
+  --chart-1: hsl(330 85% 65%);
+  --chart-2: hsl(190 80% 65%);
+  --chart-3: hsl(48 100% 65%);
+  --chart-4: hsl(270 80% 75%);
+  --chart-5: hsl(150 70% 60%);
+
+  --sidebar: hsl(320 65% 94%);
+  --sidebar-foreground: hsl(320 30% 25%);
+  --sidebar-primary: hsl(330 85% 65%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(320 70% 88%);
+  --sidebar-accent-foreground: hsl(330 85% 65%);
+  --sidebar-border: hsl(320 50% 88%);
+  --sidebar-ring: hsl(330 85% 65%);
+
+  --primary-border: hsl(from hsl(330 85% 65%) h s calc(l - 8));
+  --secondary-border: hsl(from hsl(190 80% 75%) h s calc(l - 8));
+  --destructive-border: hsl(from hsl(0 85% 70%) h s calc(l - 8));
+  --accent-border: hsl(from hsl(270 80% 75%) h s calc(l - 8));
+  --muted-border: hsl(from hsl(320 50% 92%) h s calc(l - 4));
+
+  --radius: 1.25rem;
+  --shadow-2xs: 0 1px 2px 0 hsl(320 50% 50% / 0.06);
+  --shadow-xs: 0 2px 6px 0 hsl(320 50% 50% / 0.08);
+  --shadow-sm: 0 4px 10px -2px hsl(320 50% 50% / 0.1);
+  --shadow: 0 6px 16px -2px hsl(320 50% 50% / 0.12);
+  --shadow-md: 0 10px 24px -4px hsl(320 50% 50% / 0.15);
+  --shadow-lg: 0 14px 32px -6px hsl(320 50% 50% / 0.18);
+  --shadow-xl: 0 20px 48px -10px hsl(320 50% 50% / 0.2);
+  --shadow-2xl: 0 28px 64px -12px hsl(320 50% 50% / 0.25);
+}
+
+/* ============================================
+   復古電玩主題 — 8-bit 像素風
+   ============================================ */
+[data-theme="retro"],
+.theme-retro {
+  --button-outline: rgba(0, 0, 0, 0.25);
+  --badge-outline: rgba(0, 0, 0, 0.15);
+  --elevate-1: rgba(0, 0, 0, 0.1);
+  --elevate-2: rgba(0, 0, 0, 0.2);
+
+  --background: hsl(142 55% 12%);
+  --foreground: hsl(60 100% 95%);
+  --card: hsl(142 50% 18%);
+  --card-foreground: hsl(60 100% 95%);
+  --popover: hsl(142 50% 18%);
+  --popover-foreground: hsl(60 100% 95%);
+  --primary: hsl(56 100% 55%);
+  --primary-foreground: hsl(142 55% 12%);
+  --secondary: hsl(200 80% 55%);
+  --secondary-foreground: hsl(142 55% 12%);
+  --muted: hsl(142 40% 25%);
+  --muted-foreground: hsl(120 20% 70%);
+  --accent: hsl(340 90% 60%);
+  --accent-foreground: hsl(60 100% 95%);
+  --info: hsl(200 80% 55%);
+  --info-foreground: hsl(142 55% 12%);
+  --destructive: hsl(0 85% 60%);
+  --destructive-foreground: hsl(60 100% 95%);
+  --success: hsl(120 70% 55%);
+  --success-foreground: hsl(142 55% 12%);
+  --warning: hsl(36 100% 55%);
+  --warning-foreground: hsl(142 55% 12%);
+  --border: hsl(142 60% 35%);
+  --input: hsl(142 40% 25%);
+  --ring: hsl(56 100% 55%);
+
+  --chart-1: hsl(56 100% 55%);
+  --chart-2: hsl(200 80% 55%);
+  --chart-3: hsl(340 90% 60%);
+  --chart-4: hsl(120 70% 55%);
+  --chart-5: hsl(36 100% 55%);
+
+  --sidebar: hsl(142 60% 15%);
+  --sidebar-foreground: hsl(60 100% 95%);
+  --sidebar-primary: hsl(56 100% 55%);
+  --sidebar-primary-foreground: hsl(142 55% 12%);
+  --sidebar-accent: hsl(142 50% 22%);
+  --sidebar-accent-foreground: hsl(56 100% 55%);
+  --sidebar-border: hsl(142 60% 35%);
+  --sidebar-ring: hsl(56 100% 55%);
+
+  --primary-border: hsl(from hsl(56 100% 55%) h s calc(l - 15));
+  --secondary-border: hsl(from hsl(200 80% 55%) h s calc(l - 15));
+  --destructive-border: hsl(from hsl(0 85% 60%) h s calc(l - 15));
+  --accent-border: hsl(from hsl(340 90% 60%) h s calc(l - 15));
+  --muted-border: hsl(from hsl(142 40% 25%) h s calc(l - 5));
+
+  --radius: 0rem;
+  --font-mono: 'Press Start 2P', 'VT323', 'Courier New', monospace;
+
+  --shadow-2xs: 2px 2px 0 0 hsl(0 0% 0% / 0.4);
+  --shadow-xs: 3px 3px 0 0 hsl(0 0% 0% / 0.4);
+  --shadow-sm: 4px 4px 0 0 hsl(0 0% 0% / 0.45);
+  --shadow: 5px 5px 0 0 hsl(0 0% 0% / 0.5);
+  --shadow-md: 6px 6px 0 0 hsl(0 0% 0% / 0.55);
+  --shadow-lg: 8px 8px 0 0 hsl(0 0% 0% / 0.6);
+  --shadow-xl: 10px 10px 0 0 hsl(0 0% 0% / 0.65);
+  --shadow-2xl: 12px 12px 0 0 hsl(0 0% 0% / 0.7);
+}
+
+/* ============================================
+   Tailwind 主題繫結
+   ============================================ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+
+/* ============================================
+   Elevate 工具類
+   ============================================ */
+@layer utilities {
+  input[type="search"]::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: var(--muted-foreground);
+    pointer-events: none;
+  }
+
+  .no-default-hover-elevate {}
+  .no-default-active-elevate {}
+
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: 999;
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after {
+    inset: -1px;
+  }
+}
+
+/* ============================================
+   主題專屬動畫與紋理
+   ============================================ */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px var(--primary), 0 0 16px var(--accent); }
+  50% { box-shadow: 0 0 16px var(--primary), 0 0 32px var(--accent); }
+}
+
+.theme-midnight .glow-hover:hover {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* 日漫：網點背景 */
+.theme-manga .speech-bubble {
+  position: relative;
+  border: 3px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+  font-weight: 700;
+}
+
+.theme-manga .halftone-bg {
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* 復古電玩：像素字級 */
+.theme-retro .pixel-font {
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+
+.theme-retro button,
+.theme-retro .pixel-border {
+  border-width: 3px;
+  border-style: solid;
+  border-color: var(--border);
+  box-shadow: 4px 4px 0 0 var(--border);
+}
+
+/* 糖果：柔和漸層光 */
+.theme-candy .candy-glow {
+  background: linear-gradient(135deg,
+    hsl(330 85% 92%),
+    hsl(190 80% 90%),
+    hsl(270 80% 92%)
+  );
+}
+
+/* 戰鬥陀螺：金屬漸層 */
+.theme-beyblade .metal-gradient {
+  background: linear-gradient(180deg,
+    hsl(220 20% 95%),
+    hsl(220 15% 85%),
+    hsl(220 20% 95%)
+  );
+}
+
+/* 暗夜：星點背景 */
+.theme-midnight .starfield {
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 60px 70px, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1.5px 1.5px at 120px 40px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 180px 90px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(2px 2px at 240px 20px, rgba(255,255,255,0.5), transparent);
+  background-repeat: repeat;
+  background-size: 280px 120px;
+}
+
+/* 頁面淡入動畫 */
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: page-fade-in 0.3s ease-out both;
+}
+
+/* 答對彈跳 */
+@keyframes correct-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.animate-correct {
+  animation: correct-bounce 0.4s ease-out;
+}
+
+/* 答錯抖動 */
+@keyframes wrong-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.animate-wrong {
+  animation: wrong-shake 0.4s ease-out;
+}
+
+/* 戰鬥陀螺：旋轉光環 */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.theme-beyblade .spin-ring {
+  animation: spin-slow 3s linear infinite;
+}
+
+/* 復古電玩：閃爍 */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.theme-retro .blink {
+  animation: blink 1s steps(2, start) infinite;
+}
