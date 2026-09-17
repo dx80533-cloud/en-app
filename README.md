@@ -1,14 +1,14 @@
 # 字庫派對 · 自架版
 
 GEPT 初級～中高級 + 多益 / 雅思核心字 單字複習全棧 App。
-已從平台（妙搭沙箱）遷移為**可完全自主掌控的獨立雲端 App**：自建後端 + 自訂 email / Google 登入 + 自有資料庫（SQLite 單檔）、跨裝置同步。
+已從平台（妙搭沙箱）遷移為**可完全自主掌控的獨立雲端 App**：自建後端 + 免帳號暱稱登入（裝置綁定）+ 自有資料庫（SQLite 單檔）。
 
 - 字庫：**8160 字**（GEPT 初 2216 / 中 2536 / 中高 3072，TOEIC 1250，IELTS 570），繁體中文釋義、音標、英文定義、初/中級雙語例句
 - 學習：5 種測驗題型 + 閃卡、4 種聽力題型（GEPT 聽力練習）、XP / 等級 / 連續天數遊戲化
 - 發音：瀏覽器 Web Speech API（TTS），免金鑰
 - 例句補齊：公開 API（dictionaryapi.dev）批次補齊
 - 主題：6 種風格（預設 / 深夜 / 戰鬥陀螺 / 日漫 / 糖果 / 復古）
-- 登入：email 註冊登入（JWT httpOnly cookie）+ Google 帳號登入（預設）
+- 登入：**免帳號**，輸入暱稱即進入（裝置識別碼綁定進度，JWT httpOnly cookie）；下次回來自動重進
 - 管理後台：`/admin` 匯入 CSV / JSON 字庫、手動加字、例句批次補齊
 
 ---
@@ -24,7 +24,7 @@ React 19 + Vite 8 (client/)   ──►  NestJS 10 (server/)  ──►  SQLite 
 - 後端：NestJS 10 + Drizzle ORM（better-sqlite3）
 - 前端：React 19 + Vite + Tailwind v4，SPA 由後端同源提供（`dist/client`）
 - 資料庫：SQLite 單檔，`data/vocab.db`；首次啟動自動建表並 seed 8160 字（`data/wordbank.json`）
-- 認證：email 密碼（sha256+salt 雜湊）或 Google OAuth；簽發 JWT 存入 httpOnly cookie（30 天）
+- 認證：免帳號訪客模式——前端產生裝置識別碼，`POST /api/auth/guest` 以暱稱＋裝置識別碼換取 JWT（httpOnly cookie，30 天）；同裝置永遠對應同一帳號，進度跨次瀏覽保留
 
 ## 二、本機快速啟動
 
@@ -91,19 +91,18 @@ server {
 }
 ```
 
-部署於 HTTPS 時請把 `COOKIE_SECURE=true` 與 `APP_BASE_URL=https://…` 設定正確（Google OAuth 回呼需要）。
+部署於 HTTPS 時請把 `COOKIE_SECURE=true` 與 `APP_BASE_URL=https://…` 設定正確。
 
-## 四、Google 登入設定（約 5 分鐘）
+## 四、登入（免帳號）
 
-1. 到 [Google Cloud Console](https://console.cloud.google.com) → 建立或選擇專案
-2. 「API 與服務」→「OAuth 同意畫面」→ 選擇外部 → 填應用名稱與測試 email
-3. 「API 與服務」→「憑證」→「建立憑證」→「OAuth 用戶端 ID」→ 選「**Web 應用程式**」
-   - 已授權的 JavaScript 來源：`https://vocab.example.com`
-   - 已授權的重新導向 URI：`https://vocab.example.com/api/auth/google/callback`
-4. 複製「用戶端 ID」與「用戶端密碼」填入 `.env` 的 `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`
-5. 重啟服務即可
+本版已移除 email / Google 帳號登入，改為**暱稱即進場**：
 
-> 未填 Google 憑證時，登入頁的 Google 按鈕會提示「尚未設定」，email 登入不受影響。
+- 首次使用：首頁輸入暱稱 → 「開始學習」→ 伺服器依裝置識別碼建立訪客帳號並簽發 JWT（httpOnly cookie）
+- 再次使用：自動用本機記住的暱稱與裝置識別碼直接進場，不需輸入
+- 更換暱稱：右上角選單 →「更換暱稱」（清除本機身分與 cookie）
+- 進度、收藏、主題綁定在該裝置的訪客帳號上；清除瀏覽器資料等同換新帳號
+
+> 舊的 email / Google 登入 API 仍保留於後端但介面不再使用。
 
 ## 五、環境變數
 
@@ -115,8 +114,8 @@ server {
 | `SEED_PATH` | 種子字庫 JSON 路徑（首次啟動自動匯入） | `data/wordbank.json` |
 | `JWT_SECRET` | JWT 簽章密鑰，**上線前務必改成隨機長字串** | — |
 | `COOKIE_SECURE` | HTTPS 下設 `true` | `false` |
-| `APP_BASE_URL` | 對外網址（Google OAuth 回呼與本機跳轉用） | `http://localhost:3000` |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth 憑證（可留空，僅停用 Google 登入） | 空 |
+| `APP_BASE_URL` | 對外網址 | `http://localhost:3000` |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | （保留但未使用，可留空） | 空 |
 
 ## 六、資料與備份
 
@@ -140,7 +139,7 @@ server {
 
 | 項目 | 平台版 | 自架版 |
 |---|---|---|
-| 登入 | 僅飛書 / 手機（平台限制） | **email 註冊 + Google 帳號（預設）** |
+| 登入 | 僅飛書 / 手機（平台限制） | **免帳號：暱稱即進場（裝置綁定）** |
 | 資料庫 | 平台託管 Postgres | 自有 SQLite 單檔，完全自主 |
 | 部署 | 平台沙箱 | 你自己的伺服器 / Docker |
 | 功能 | 全部既有功能 | 與平台版一致（8160 字 / 5 種題型+閃卡 / 4 種聽力 / 6 主題 / 後台匯入） |

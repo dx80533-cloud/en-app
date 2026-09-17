@@ -115,6 +115,45 @@ export class AuthService {
     return { user: this.toAuthUser(user), token: this.signToken(user) };
   }
 
+  /**
+   * Guest mode: a device-local anonymous account derived from a device id.
+   * Same device id always maps to the same account, so progress persists
+   * across visits (and across browsers) as long as the device id is kept.
+   */
+  async guestLogin(nickname: string, deviceId: string): Promise<AuthResult> {
+    const cleanNick = (nickname || '').trim().slice(0, 20) || '學員';
+    const devId = (deviceId || '').trim();
+    if (!devId) {
+      throw new UnauthorizedException('缺少裝置識別碼');
+    }
+    const email = `guest_${createHash('sha256').update(devId).digest('hex').slice(0, 20)}@guest.local`;
+
+    const rows = await this.db.select().from(users).where(eq(users.email, email));
+    let user: UserRow;
+    if (rows.length > 0) {
+      user = rows[0] as unknown as UserRow;
+      if (user.name !== cleanNick) {
+        const updated = await this.db
+          .update(users)
+          .set({ name: cleanNick, avatar: '' })
+          .where(eq(users.id, user.id))
+          .returning();
+        user = updated[0] as unknown as UserRow;
+      }
+    } else {
+      const created = await this.db
+        .insert(users)
+        .values({
+          email,
+          name: cleanNick,
+          provider: 'guest',
+        })
+        .returning();
+      user = created[0] as unknown as UserRow;
+    }
+    return { user: this.toAuthUser(user), token: this.signToken(user) };
+  }
+
   async loginWithGoogle(code: string): Promise<AuthResult> {
     const clientId = this.config.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = this.config.get<string>('GOOGLE_CLIENT_SECRET');

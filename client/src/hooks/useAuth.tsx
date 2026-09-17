@@ -6,6 +6,7 @@ import React, {
   useCallback,
 } from 'react';
 import * as authApi from '@client/src/api/auth';
+import { DEVICE_ID_KEY, NICKNAME_KEY } from '@client/src/api/auth';
 import type { CurrentUser } from '@client/src/api/auth';
 
 /** Shape kept compatible with the old `useCurrentUserProfile()` return */
@@ -21,16 +22,27 @@ interface AuthContextValue {
   isLoggedIn: boolean;
   isLoading: boolean;
   refresh: () => Promise<void>;
-  login: (email: string, password: string) => Promise<CurrentUser>;
-  register: (
-    email: string,
-    password: string,
-    name?: string,
-  ) => Promise<CurrentUser>;
+  guestLogin: (nickname: string) => Promise<CurrentUser>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+function toShim(info: {
+  isLoggedIn: boolean;
+  userId?: string;
+  name?: string;
+  email?: string;
+  avatar?: string;
+}): UserInfoShim | null {
+  if (!info.isLoggedIn || !info.userId) return null;
+  return {
+    user_id: info.userId,
+    name: info.name || '使用者',
+    avatar: info.avatar,
+    email: info.email,
+  };
+}
 
 export function AuthProvider({
   children,
@@ -43,41 +55,50 @@ export function AuthProvider({
   const refresh = useCallback(async (): Promise<void> => {
     try {
       const info = await authApi.getCurrentUser();
-      if (info.isLoggedIn && info.userId) {
-        setUserInfo({
-          user_id: info.userId,
-          name: info.name || '使用者',
-          avatar: info.avatar,
-          email: info.email,
-        });
-      } else {
-        setUserInfo(null);
-      }
+      setUserInfo(toShim(info));
     } catch {
       setUserInfo(null);
     }
   }, []);
 
+  // On mount: 1) reuse the current session; 2) otherwise silently re-enter
+  // with the saved device identity (no login screen on returning visits).
   useEffect(() => {
-    refresh().finally(() => setIsLoading(false));
-  }, [refresh]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const info = await authApi.getCurrentUser();
+        if (!cancelled && info.isLoggedIn && info.userId) {
+          setUserInfo(toShim(info));
+          return;
+        }
+        const deviceId = localStorage.getItem(DEVICE_ID_KEY);
+        const nickname = localStorage.getItem(NICKNAME_KEY);
+        if (deviceId && nickname) {
+          try {
+            await authApi.guestLogin(nickname);
+            const info2 = await authApi.getCurrentUser();
+            if (!cancelled && info2.isLoggedIn && info2.userId) {
+              setUserInfo(toShim(info2));
+            }
+          } catch {
+            /* stay logged out, show nickname entry */
+          }
+        }
+      } catch {
+        /* network/server unavailable, stay logged out */
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const login = useCallback(
-    async (email: string, password: string): Promise<CurrentUser> => {
-      const user = await authApi.login(email, password);
-      await refresh();
-      return user;
-    },
-    [refresh],
-  );
-
-  const register = useCallback(
-    async (
-      email: string,
-      password: string,
-      name?: string,
-    ): Promise<CurrentUser> => {
-      const user = await authApi.register(email, password, name);
+  const guestLogin = useCallback(
+    async (nickname: string): Promise<CurrentUser> => {
+      const user = await authApi.guestLogin(nickname);
       await refresh();
       return user;
     },
@@ -86,6 +107,13 @@ export function AuthProvider({
 
   const logout = useCallback(async (): Promise<void> => {
     await authApi.signOut();
+    try {
+      localStorage.removeItem(DEVICE_ID_KEY);
+      localStorage.removeItem(NICKNAME_KEY);
+    } catch {
+      /* ignore */
+    }
+    setUserInfo(null);
   }, []);
 
   return (
@@ -95,8 +123,7 @@ export function AuthProvider({
         isLoggedIn: !!userInfo,
         isLoading,
         refresh,
-        login,
-        register,
+        guestLogin,
         logout,
       }}
     >

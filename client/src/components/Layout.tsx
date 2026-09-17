@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import {
   Home,
   BookOpen,
@@ -14,7 +14,6 @@ import {
   User as UserIcon,
 } from 'lucide-react';
 import { useAuth } from '@client/src/hooks/useAuth';
-import * as authApi from '@client/src/api/auth';
 import { Image } from '@client/src/components/ui/image';
 
 interface NavItem {
@@ -39,6 +38,7 @@ const navItems: NavItem[] = [
 
 const Layout: React.FC = () => {
   const { userInfo, isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -53,12 +53,13 @@ const Layout: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
 
-  const handleLogin = (): void => {
-    authApi.redirectToLogin(window.location.pathname);
+  const handleStart = (): void => {
+    navigate('/login');
   };
 
-  const handleLogout = (): void => {
-    logout();
+  const handleSwitchNickname = (): void => {
+    menuOpen && setMenuOpen(false);
+    logout().finally(() => navigate('/login'));
   };
 
   return (
@@ -100,10 +101,10 @@ const Layout: React.FC = () => {
           <div className="flex items-center gap-3 ml-4 pl-4 border-l border-border">
             {!isLoggedIn ? (
               <button
-                onClick={handleLogin}
+                onClick={handleStart}
                 className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:bg-primary/90 hover:shadow-md transition-all"
               >
-                登入
+                開始學習
               </button>
             ) : (
               <div className="relative" ref={menuRef}>
@@ -138,11 +139,11 @@ const Layout: React.FC = () => {
                       <span>管理後台</span>
                     </NavLink>
                     <button
-                      onClick={handleLogout}
+                      onClick={handleSwitchNickname}
                       className="w-full flex items-center gap-2 px-4 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors"
                     >
                       <LogOut className="h-4 w-4" />
-                      <span>登出</span>
+                      <span>更換暱稱</span>
                     </button>
                   </div>
                 )}

@@ -29,6 +29,11 @@ interface LoginDto {
   password: string;
 }
 
+interface GuestDto {
+  nickname: string;
+  deviceId: string;
+}
+
 @Controller('api/auth')
 export class AuthController {
   constructor(
@@ -80,6 +85,25 @@ export class AuthController {
     }
 
     const { user, token } = await this.authService.login(email, password);
+    this.setTokenCookie(res, token);
+    return { user };
+  }
+
+  @Post('guest')
+  async guest(
+    @Body() body: GuestDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ user: { id: string; email: string; name: string; avatar: string; provider: string } }> {
+    const nickname = (body?.nickname || '').trim().slice(0, 20);
+    const deviceId = (body?.deviceId || '').trim();
+    if (!nickname) {
+      throw new BadRequestException('請輸入暱稱');
+    }
+    if (!deviceId || deviceId.length > 128) {
+      throw new BadRequestException('缺少有效的裝置識別碼');
+    }
+
+    const { user, token } = await this.authService.guestLogin(nickname, deviceId);
     this.setTokenCookie(res, token);
     return { user };
   }

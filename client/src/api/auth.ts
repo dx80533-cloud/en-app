@@ -57,9 +57,41 @@ export async function login(
 export async function signOut(): Promise<void> {
   try {
     await axiosForBackend.post('/auth/logout');
-  } finally {
-    window.location.href = '/';
+  } catch (err) {
+    logger.warn('authApi.signOut failed', err);
   }
+}
+
+export const DEVICE_ID_KEY = 'vocab_device_id';
+export const NICKNAME_KEY = 'vocab_nickname';
+
+/** Get or create a stable device-local id (the guest identity). */
+export function getOrCreateDeviceId(): string {
+  try {
+    let id = localStorage.getItem(DEVICE_ID_KEY);
+    if (!id) {
+      id = `dev_${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36)}`;
+      localStorage.setItem(DEVICE_ID_KEY, id);
+    }
+    return id;
+  } catch {
+    return `dev_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+  }
+}
+
+/** Guest login: nickname + device id → JWT cookie. No password needed. */
+export async function guestLogin(nickname: string): Promise<CurrentUser> {
+  const deviceId = getOrCreateDeviceId();
+  const { data } = await axiosForBackend.post<{ user: CurrentUser }>(
+    '/auth/guest',
+    { nickname: nickname.trim().slice(0, 20), deviceId },
+  );
+  try {
+    localStorage.setItem(NICKNAME_KEY, nickname.trim().slice(0, 20));
+  } catch {
+    /* storage unavailable, ignore */
+  }
+  return data.user;
 }
 
 /** Start Google OAuth flow (server redirects to Google consent screen) */
